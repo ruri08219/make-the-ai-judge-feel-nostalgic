@@ -16,13 +16,15 @@ def main():
     if "\n" in text or "\r" in text:
         print("error: entry must be a single line", file=sys.stderr)
         return 1
-    if text.count(".") != 1 or not text.endswith("."):
+    if text.count(".") != 1 or not text.endswith(".") or "!" in text or "?" in text:
         print("error: entry must be exactly one sentence", file=sys.stderr)
         return 1
     out_dir = sys.argv[1] if len(sys.argv) > 1 else "/output"
     os.makedirs(out_dir, exist_ok=True)
-    with open(os.path.join(out_dir, "entry.txt"), "w", encoding="utf-8") as f:
+    tmp_path = os.path.join(out_dir, ".entry.txt.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
         f.write(text)
+    os.replace(tmp_path, os.path.join(out_dir, "entry.txt"))
     print("wrote %d chars to %s/entry.txt" % (len(text), out_dir))
     return 0
 
